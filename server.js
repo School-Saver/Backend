@@ -6,7 +6,7 @@ const app = express();
 const port = process.env.PORT || 5000
 
 app.use(cors({
-    origin: "https://ubiquitous-bonbon-316cbf.netlify.app",
+    origin: "https://frontend-5ihbcy4kf-school-saver.vercel.app/",
     methods: ["GET", "POST", "PATCH", "DELETE"]
 }));
 app.use(express.json());
