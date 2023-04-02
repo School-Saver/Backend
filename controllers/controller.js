@@ -28,7 +28,7 @@ export async function createBookmark(req, res) {
     link = Array(link) 
 
     const query = pgp.as.format(`INSERT INTO bookmark (bookmarks, links) VALUES ('{$1}' , $2);`, [bookmark, link])
-    
+    console.log(query)
     try {
         res.send(await db.query(query))
     } catch(err) {
