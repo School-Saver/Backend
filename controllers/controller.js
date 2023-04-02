@@ -28,7 +28,6 @@ export async function createBookmark(req, res) {
     link = Array(link) 
 
     const query = pgp.as.format(`INSERT INTO bookmark (bookmarks, links) VALUES ($1, $2);`, [bookmark, link])
-    console.log(query)
     try {
         res.send(await db.query(query))
     } catch(err) {
@@ -39,7 +38,6 @@ export async function createBookmark(req, res) {
 
 export async function createBookmarkById(req, res) {
     let { bookmark, link } = req.body
-    console.log(bookmark)
     bookmark = bookmark.split(" ")
     link = Array(link) 
 
@@ -130,6 +128,11 @@ export async function updateNotes(req, res) {
     const query = pgp.as.format(`UPDATE note SET notes = ($1)::jsonb WHERE id=$2;`, [JSON.stringify(req.body), req.params.id])
     try {
         res.send(await db.query(query))
+        const result = await db.query(pgp.as.format("SELECT * FROM note WHERE id=$1", [req.params.id]))
+        if (!(Object.keys(result.rows[0].notes)).length) {
+            const delete_query = pgp.as.format("DELETE FROM note WHERE id = $1", [req.params.id])
+            await db.query(delete_query)
+        }
     } catch(err) {
         res.status(503).send(err)
         console.log(err)
@@ -137,7 +140,8 @@ export async function updateNotes(req, res) {
 }
 
 export async function deleteNotes(req, res) {
-    const query = pgp.as.format(`UPDATE note SET notes = ('{}')::jsonb WHERE id=$1;`, [req.params.id])
+    // const query = pgp.as.format(`UPDATE note SET notes = ('{}')::jsonb WHERE id=$1;`, [req.params.id])
+    const query = pgp.as.format("DELETE FROM note WHERE id = $1", [req.params.id]);
     try {
         res.send(await db.query(query))
     } catch(err) {
