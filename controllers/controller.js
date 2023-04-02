@@ -27,7 +27,7 @@ export async function createBookmark(req, res) {
     bookmark = bookmark.split(" ")
     link = Array(link) 
 
-    const query = pgp.as.format(`INSERT INTO bookmark (bookmarks, links) VALUES ('{$1}' , $2);`, [bookmark, link])
+    const query = pgp.as.format(`INSERT INTO bookmark (bookmarks, links) VALUES ($1, $2);`, [bookmark, link])
     console.log(query)
     try {
         res.send(await db.query(query))
@@ -75,6 +75,11 @@ export async function deleteBookmark(req, res) {
     `, [bookmark, req.params.id, link, req.params.id])
     try {
         res.send(await db.query(query))
+        const result = await db.query(pgp.as.format("SELECT * FROM bookmark WHERE id=$1", [req.params.id]))
+        if (!(result.rows[0].bookmarks).length && !(result.rows[0].links).length) {
+            const delete_query = pgp.as.format("DELETE FROM bookmark WHERE id = $1", [req.params.id])
+            await db.query(delete_query)
+        }
     } catch(err) {
         res.status(503)
         console.log(err)
