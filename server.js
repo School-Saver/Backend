@@ -7,14 +7,16 @@ config()
 const app = express();
 const port = process.env.PORT || 5000
 
-app.use(cors({
-    origin: process.env.CLIENT_URL,
-    methods: ["GET", "POST", "PATCH", "DELETE"]
-}));
-app.options('*', cors({
-    origin: process.env.CLIENT_URL,
-    methods: ["GET", "POST", "PATCH", "DELETE"]
-}))
+// app.use(cors({
+//     origin: process.env.CLIENT_URL,
+//     methods: ["GET", "POST", "PATCH", "DELETE"]
+// }));
+app.use(cors())
+app.options('*', cors())
+// app.options('*', cors({
+//     origin: process.env.CLIENT_URL,
+//     methods: ["GET", "POST", "PATCH", "DELETE"]
+// }))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
